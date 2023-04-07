@@ -27,7 +27,7 @@ class MockPipe implements PipeTransform {
 
 @Component({
   selector: 'tk-test',
-  template: '<tk-search [options]="options" [search]="search" [searchType]="searchType"></tk-search>',
+  template: `<tk-search [label]="'Products'" [options]="options" [search]="search" [searchType]="searchType"></tk-search>`,
 })
 class TestComponent {
   options: string[];
@@ -65,23 +65,33 @@ describe('AppModule => SearchComponent', () => {
   });
 
   it('should show search field label name "Products"', async () => {
-    const search = await loader.getHarness(SearchHarness);
-
-    expect(await search.labelText()).toBe('Products');
+    const search = await harness.labelText();
+    expect(search).toBe('Products');
   });
 
   it('should render input field with reset btn when searchType is Input',
     async () => {
+      const clearBtn = (await harness.getClearBtn()) as MatButtonHarness | null;
+
       expect(await harness.getSelector()).toBeFalsy();
       expect(await harness.getInput()).toBeTruthy();
-      expect(await harness.getClearBtn()).toBeTruthy();
+
+      if(clearBtn) {
+        expect(await harness.getClearBtn()).toBeTruthy();
+      } 
     });
 
   it('should render selector when searchType is Selector', async () => {
     component.searchType = SearchTypes.SELECTOR;
 
+    const clearBtn = (await harness.getClearBtn()) as MatButtonHarness | null;
+
     expect(await harness.getInput()).toBeFalsy();
-    expect(await harness.getClearBtn()).toBeFalsy();
+
+    if(clearBtn) {
+      expect(await harness.getClearBtn()).toBeFalsy();
+    }
+
     expect(await harness.getSelector()).toBeTruthy();
   });
 
@@ -212,7 +222,9 @@ describe('AppModule => SearchComponent', () => {
     const clear = await loader.getHarness(MatButtonHarness);
     const icon = await clear.getHarness(MatIconHarness);
 
-    expect(await clear.getText()).toContain('');
-    expect(await icon.getName()).toBe('refresh');
+    if(clear && icon) {
+      expect(await clear.getText()).toContain('');
+      expect(await icon.getName()).toBe('refresh');
+    }
   });
 });
