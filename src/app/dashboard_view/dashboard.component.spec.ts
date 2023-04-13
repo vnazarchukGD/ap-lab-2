@@ -70,6 +70,12 @@ describe('Dashboard', () => {
     fixture.detectChanges();
   });
 
+  afterEach(()=>{
+    harness = null;
+    component = null;
+    store.refreshState();
+  })
+
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
@@ -120,6 +126,8 @@ describe('Dashboard', () => {
     });
 
     afterEach(()=>{
+      pieChartComponent = null;
+      store.overrideSelector(ProductSelectors.search, null);
       store.refreshState();
       fixture.detectChanges();
     })
@@ -154,6 +162,8 @@ describe('Dashboard', () => {
     });
 
     afterEach(()=>{
+      barChartComponent = null;
+      store.overrideSelector(ProductSelectors.search, null);
       store.refreshState();
       fixture.detectChanges();
     })
